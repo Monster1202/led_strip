@@ -21,6 +21,7 @@ static const char *TAG = "example";
 
 #define CONFIG_EXAMPLE_RMT_TX_GPIO 19
 #define CONFIG_EXAMPLE_STRIP_LED_NUMBER 16
+void breath_func(led_strip_t *strip_t);
 /**
  * @brief Simple helper function, converting HSV color space to RGB color space
  *
@@ -91,6 +92,7 @@ void app_main(void)
     // install ws2812 driver
     led_strip_config_t strip_config = LED_STRIP_DEFAULT_CONFIG(CONFIG_EXAMPLE_STRIP_LED_NUMBER, (led_strip_dev_t)config.channel);
     led_strip_t *strip = led_strip_new_rmt_ws2812(&strip_config);
+    //*strip = led_strip_new_rmt_ws2812(&strip_config);
     if (!strip) {
         ESP_LOGE(TAG, "install WS2812 driver failed");
     }
@@ -99,6 +101,7 @@ void app_main(void)
     // Show simple rainbow chasing pattern
     ESP_LOGI(TAG, "LED Rainbow Chase Start");
     while (true) {
+        //breath_func(strip);
         for (int i = 0; i < 3; i++) {
             for (int j = i; j < CONFIG_EXAMPLE_STRIP_LED_NUMBER; j += 3) {
                 // Build RGB values
@@ -115,4 +118,88 @@ void app_main(void)
         }
         start_rgb += 60;
     }
+}
+
+typedef struct
+{
+    uint32_t usRed;         /* color R setting  0-1000*/
+    uint32_t usGreen;		/* color G setting  0-1000*/
+    uint32_t usBlue;		/* color B setting  0-1000*/
+}COLOR_RGB_T;
+
+void set_all_func(led_strip_t *strip_t)
+{   
+    COLOR_RGB_T usColor = {1000,0,0};
+    
+    for (int j = 0; j < CONFIG_EXAMPLE_STRIP_LED_NUMBER; j++) {
+        // Build RGB values
+        //hue = j * 360 / CONFIG_EXAMPLE_STRIP_LED_NUMBER + start_rgb;
+        //led_strip_hsv2rgb(hue, 100, 100, &red, &green, &blue);
+        // Write RGB values to strip driver
+        ESP_ERROR_CHECK(strip_t->set_pixel(strip_t, j, usColor.usRed, usColor.usGreen, usColor.usBlue));
+    }
+    // Flush RGB values to LEDs
+    ESP_ERROR_CHECK(strip_t->refresh(strip_t, 100));
+    //vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
+    // strip_t->clear(strip_t, 50);
+    // vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
+}
+
+void breath_func(led_strip_t *strip_t)
+{   
+    COLOR_RGB_T usColor = {1000,0,0};
+    
+    for (int j = 0; j < CONFIG_EXAMPLE_STRIP_LED_NUMBER; j++) {
+        // Build RGB values
+        //hue = j * 360 / CONFIG_EXAMPLE_STRIP_LED_NUMBER + start_rgb;
+        //led_strip_hsv2rgb(hue, 100, 100, &red, &green, &blue);
+        // Write RGB values to strip driver
+        ESP_ERROR_CHECK(strip_t->set_pixel(strip_t, j, usColor.usRed, usColor.usGreen, usColor.usBlue));
+    }
+    // Flush RGB values to LEDs
+    ESP_ERROR_CHECK(strip_t->refresh(strip_t, 100));
+    vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
+    strip_t->clear(strip_t, 50);
+    vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
+
+}
+
+void rainbow_func(led_strip_t *strip_t)
+{   
+    COLOR_RGB_T usColor = {1000,0,0};
+    
+    for (int j = 0; j < CONFIG_EXAMPLE_STRIP_LED_NUMBER; j++) {
+        // Build RGB values
+        hue = j * 360 / CONFIG_EXAMPLE_STRIP_LED_NUMBER + start_rgb;
+        led_strip_hsv2rgb(hue, 100, 100, &red, &green, &blue);
+        // Write RGB values to strip driver
+        ESP_ERROR_CHECK(strip->set_pixel(strip, j, red, green, blue));
+    }
+    // Flush RGB values to LEDs
+    ESP_ERROR_CHECK(strip->refresh(strip, 100));
+    vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
+    strip->clear(strip, 50);
+    vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
+
+    start_rgb += 60;
+}
+
+void snake_func(led_strip_t *strip_t)
+{   
+    COLOR_RGB_T usColor = {1000,0,0};
+    
+    for (int j = 0; j < CONFIG_EXAMPLE_STRIP_LED_NUMBER; j++) {
+        // Build RGB values
+        hue = j * 360 / CONFIG_EXAMPLE_STRIP_LED_NUMBER + start_rgb;
+        led_strip_hsv2rgb(hue, 100, 100, &red, &green, &blue);
+        // Write RGB values to strip driver
+        ESP_ERROR_CHECK(strip->set_pixel(strip, j, red, green, blue));
+    }
+    // Flush RGB values to LEDs
+    ESP_ERROR_CHECK(strip->refresh(strip, 100));
+    vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
+    strip->clear(strip, 50);
+    vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
+
+    start_rgb += 60;
 }
