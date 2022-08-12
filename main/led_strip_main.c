@@ -166,6 +166,11 @@ void breath_func(led_strip_t *strip_t)
 
 void rainbow_func(led_strip_t *strip_t)
 {   
+    uint32_t red = 0;
+    uint32_t green = 0;
+    uint32_t blue = 0;
+    uint16_t hue = 0;
+    uint16_t start_rgb = 0;
     COLOR_RGB_T usColor = {1000,0,0};
     
     for (int j = 0; j < CONFIG_EXAMPLE_STRIP_LED_NUMBER; j++) {
@@ -173,12 +178,12 @@ void rainbow_func(led_strip_t *strip_t)
         hue = j * 360 / CONFIG_EXAMPLE_STRIP_LED_NUMBER + start_rgb;
         led_strip_hsv2rgb(hue, 100, 100, &red, &green, &blue);
         // Write RGB values to strip driver
-        ESP_ERROR_CHECK(strip->set_pixel(strip, j, red, green, blue));
+        ESP_ERROR_CHECK(strip_t->set_pixel(strip_t, j, red, green, blue));
     }
     // Flush RGB values to LEDs
-    ESP_ERROR_CHECK(strip->refresh(strip, 100));
+    ESP_ERROR_CHECK(strip_t->refresh(strip_t, 100));
     vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
-    strip->clear(strip, 50);
+    strip_t->clear(strip_t, 50);
     vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
 
     start_rgb += 60;
@@ -186,6 +191,11 @@ void rainbow_func(led_strip_t *strip_t)
 
 void snake_func(led_strip_t *strip_t)
 {   
+    uint32_t red = 0;
+    uint32_t green = 0;
+    uint32_t blue = 0;
+    uint16_t hue = 0;
+    uint16_t start_rgb = 0;
     COLOR_RGB_T usColor = {1000,0,0};
     
     for (int j = 0; j < CONFIG_EXAMPLE_STRIP_LED_NUMBER; j++) {
@@ -193,12 +203,12 @@ void snake_func(led_strip_t *strip_t)
         hue = j * 360 / CONFIG_EXAMPLE_STRIP_LED_NUMBER + start_rgb;
         led_strip_hsv2rgb(hue, 100, 100, &red, &green, &blue);
         // Write RGB values to strip driver
-        ESP_ERROR_CHECK(strip->set_pixel(strip, j, red, green, blue));
+        ESP_ERROR_CHECK(strip_t->set_pixel(strip_t, j, red, green, blue));
     }
     // Flush RGB values to LEDs
-    ESP_ERROR_CHECK(strip->refresh(strip, 100));
+    ESP_ERROR_CHECK(strip_t->refresh(strip_t, 100));
     vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
-    strip->clear(strip, 50);
+    strip_t->clear(strip_t, 50);
     vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
 
     start_rgb += 60;
